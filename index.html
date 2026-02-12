@@ -424,7 +424,7 @@
 
     <div class="container" id="mainContainer">
         <div class="content-top" id="contentTop">
-            <h1>💝 ¡Una pregunta especial! 💝</h1>
+            <h1> ¡Una preguntaaa! 💝</h1>
             <span class="name" id="nombreDestino">Katherine</span>
             <div class="question" id="pregunta">
                 ¿Quieres ser mi San Valentín?
@@ -433,7 +433,7 @@
         
         <div class="buttons-container" id="buttonsContainer">
             <div class="buttons" id="botonesWrapper">
-                <button class="btn btn-yes" id="btnSi">¡SÍ! 💘</button>
+                <button class="btn btn-yes" id="btnSi">¡SÍ! 💕</button>
                 <button class="btn btn-no" id="btnNo">No 💔</button>
             </div>
         </div>
@@ -449,7 +449,7 @@
         // ============================================
         // CONFIGURACIÓN - TUS URLs CORRECTAS
         // ============================================
-        const NOMBRE = "Katherine";
+        const NOMBRE = "Kiki";
         const CANCION_URL = "https://jason05112005.github.io/SanValentinkiki/Amor.mp3";
         const GIF_URL = "https://i.pinimg.com/originals/10/f4/9b/10f49b851870dcbddfb368d0d4ba7ede.gif";
         // ============================================
@@ -561,27 +561,27 @@
         
         // Mensajes
         const mensajesNo = [
-            "¿Estás segura? 🥺",
-            "¡Piénsalo bien! 💕",
-            "¿De verdad no? 😢",
-            "¡Podríamos comer chocolate! 🍫",
-            "¡Y ver películas juntos! 🎬",
-            "Me romperás el corazón 💔",
-            "¡Dame una oportunidad! 🌹",
-            "¿Última oportunidad? 🤞",
-            "¡Vamos, anímate! ✨",
-            "No te arrepentirás 💝",
+            "Estás seguraaa? ",
+            "Piénsalo bien jaja",
+            "De verdad no? 😢",
+            "Te llevo flores☁️! ",
+            "¡Y ver un kdrama! ",
+            "Rompeme el corazon Karen 💔",
+            "haz lo que quieras con el",
+            "Última oportunidad? 🤞",
+            "Anímateee ",
+            "No te arrepentirás ",
             "¡Sé mi Valentín! 💘"
         ];
         
         const mensajesHuida = [
-            "¡Muy lento! 🏃‍♂️💨",
-            "¡No me alcanzas! 😜",
-            "¡Casi, pero no! 😂",
-            "¡Mira cómo huyo! 💨",
-            "¡Atrápame si puedes! 🎯",
-            "¡Soy muy rápido! ⚡",
-            "¡Nunca dirás no! 😝",
+            "Muy lento! 🏃‍♂️",
+            "No me alcanzas jajaj",
+            "No puedes negarte",
+            "Se que quieres decir que si",
+            "Dale una oportunidad",
+            "Jaja no vo puedes decir que no",
+            "Es si o si",
             "¡Ríndete y di SÍ! 💘"
         ];
         
@@ -608,7 +608,7 @@
             
             if (noSize <= 0.4 && !modoHuida) {
                 modoHuida = true;
-                messageEl.textContent = "¡Ahora empieza lo divertido! ¡A huir! 🏃‍♂️💨";
+                messageEl.textContent = "NO acepto un no";
                 hacerHuirBotonNo();
             }
         }
@@ -681,7 +681,7 @@
             if (modoHuida) {
                 e.preventDefault();
                 hacerHuirBotonNo();
-                messageEl.textContent = "¡CASI! ¡PERO NO! 😂";
+                messageEl.textContent = "¡CASI!";
             }
         });
         
@@ -694,7 +694,7 @@
             successContainer.classList.remove('hidden');
             successContainer.innerHTML = `
                 <div class="success-screen">
-                    <div class="success-title">¡YEEEEI! 💕</div>
+                    <div class="success-title">¡SIIIIII! 💕</div>
                     <div class="success-message">¡Sabía que dirías que sí, ${NOMBRE}!</div>
                     <div class="gif-container">
                         <img src="${GIF_URL}" alt="San Valentín GIF" onerror="this.onerror=null; this.src='https://i.pinimg.com/originals/10/f4/9b/10f49b851870dcbddfb368d0d4ba7ede.gif';">
@@ -703,7 +703,7 @@
                         💖 💘 💝
                     </div>
                     <p style="font-size: 1.3rem; margin-top: 25px; opacity: 0.9;">
-                        Te espero el 14 de febrero 💘
+                        Ahora eres mi San valentín 
                     </p>
                 </div>
             `;
