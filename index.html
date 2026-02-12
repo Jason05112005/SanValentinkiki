@@ -21,7 +21,6 @@
             position: relative;
         }
 
-        /* Fondo con textura de corazones */
         body::before {
             content: "❤️";
             position: fixed;
@@ -257,7 +256,6 @@
             display: none !important;
         }
 
-        /* PANTALLA DE ÉXITO */
         .success-screen {
             background: linear-gradient(145deg, #ff6b81, #ff4757);
             color: white;
@@ -297,7 +295,6 @@
             text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
         }
 
-        /* ESPACIO PARA EL GIF */
         .gif-container {
             width: 100%;
             max-width: 500px;
@@ -337,7 +334,6 @@
             margin-bottom: 1rem;
         }
 
-        /* REPRODUCTOR DE MÚSICA - OCULTO VISUALMENTE PERO FUNCIONANDO */
         .music-player {
             position: fixed;
             bottom: 20px;
@@ -364,7 +360,6 @@
             background: rgba(255, 107, 129, 0.8);
         }
 
-        /* Audio element oculto */
         #bg-music {
             display: none;
         }
@@ -419,14 +414,8 @@
     </style>
 </head>
 <body>
-    <!-- AUDIO QUE SUENA DESDE EL INICIO -->
-    <audio id="bg-music" autoplay loop>
-        <!-- CAMBIA ESTA URL POR LA DE TU CANCIÓN EN GITHUB -->
-        <source src="https://jason05112005.github.io/SanValentinkiki/Amor.mp3" type="audio/mpeg">
-        Tu navegador no soporta el elemento de audio.
-    </audio>
+    <audio id="bg-music" preload="auto"></audio>
 
-    <!-- CONTROLES DE MÚSICA (BOTÓN FLOTANTE) -->
     <div class="music-player" id="musicControl">
         <span id="musicIcon">🎵</span>
     </div>
@@ -458,23 +447,20 @@
         // ============================================
         // CONFIGURACIÓN - ¡CAMBIA ESTOS VALORES!
         // ============================================
-        const NOMBRE = "Valentina";  // Nombre de tu San Valentín
-        
-        // URL DE LA CANCIÓN (en GitHub)
-        const CANCION_URL = "https://jason05112005.github.io/SanValentinkiki/Amor.mp3"; // ¡CAMBIA ESTO!
-        
-        // URL DEL GIF
-        const GIF_URL = "https://i.pinimg.com/originals/ef/ba/62/efba62f209ca2cc400e8083212d64472.gif"; // ¡CAMBIA ESTO!
+        const NOMBRE = "Kiki";
+        const CANCION_URL = "https://jason05112005.github.io/SanValentinkiki/Amor.mp3";
+        const GIF_URL = "https://i.pinimg.com/originals/10/f4/9b/10f49b851870dcbddfb368d0d4ba7ede.gif";
         // ============================================
 
-        // Variables del juego
+        // Variables
         let noSize = 1;
         let yesSize = 1;
         let noCount = 0;
         let modoHuida = false;
-        let musicaActivada = true;
+        let musicaActivada = false;
+        let audioIniciado = false;
         
-        // Elementos del DOM
+        // Elementos DOM
         const btnSi = document.getElementById('btnSi');
         const btnNo = document.getElementById('btnNo');
         const messageEl = document.getElementById('message');
@@ -488,38 +474,60 @@
         const musicControl = document.getElementById('musicControl');
         const musicIcon = document.getElementById('musicIcon');
         
-        // Establecer la URL de la canción
-        if (audio) {
-            // Limpiar fuentes existentes
-            while (audio.firstChild) {
-                audio.removeChild(audio.firstChild);
+        nombreDestino.textContent = NOMBRE;
+        
+        // ============================================
+        // FUNCIÓN DE AUDIO - INICIA CON PRIMER CLIC
+        // ============================================
+        function iniciarAudio() {
+            if (!audioIniciado) {
+                audio.src = CANCION_URL;
+                audio.loop = true;
+                audio.volume = 0.7;
+                
+                audio.play().then(() => {
+                    musicaActivada = true;
+                    audioIniciado = true;
+                    musicIcon.textContent = '🎵';
+                }).catch(error => {
+                    musicIcon.textContent = '🔇';
+                });
             }
-            // Crear nueva fuente
-            const source = document.createElement('source');
-            source.src = CANCION_URL;
-            source.type = 'audio/mpeg';
-            audio.appendChild(source);
-            audio.load();
-            
-            // Intentar reproducir automáticamente
-            audio.play().catch(e => {
-                console.log("Autoplay bloqueado, el usuario debe interactuar");
-                // Si el autoplay falla, mostramos el botón para reproducir
-                musicIcon.textContent = '🔇';
-                musicaActivada = false;
-            });
         }
         
-        // Control de reproducción (play/pause)
-        musicControl.addEventListener('click', function() {
-            if (audio.paused) {
-                audio.play();
-                musicIcon.textContent = '🎵';
-                musicaActivada = true;
+        // Detectar primera interacción
+        function detectarPrimeraInteraccion() {
+            const eventos = ['click', 'mouseover', 'touchstart', 'keydown'];
+            
+            function primeraInteraccionHandler() {
+                iniciarAudio();
+                eventos.forEach(evento => {
+                    document.body.removeEventListener(evento, primeraInteraccionHandler);
+                });
+            }
+            
+            eventos.forEach(evento => {
+                document.body.addEventListener(evento, primeraInteraccionHandler, { once: true });
+            });
+        }
+        detectarPrimeraInteraccion();
+        
+        // Control de música
+        musicControl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            if (!audioIniciado) {
+                iniciarAudio();
             } else {
-                audio.pause();
-                musicIcon.textContent = '🔇';
-                musicaActivada = false;
+                if (audio.paused) {
+                    audio.play();
+                    musicIcon.textContent = '🎵';
+                    musicaActivada = true;
+                } else {
+                    audio.pause();
+                    musicIcon.textContent = '🔇';
+                    musicaActivada = false;
+                }
             }
         });
         
@@ -548,8 +556,6 @@
             "¡Nunca dirás no! 😝",
             "¡Ríndete y di SÍ! 💘"
         ];
-        
-        nombreDestino.textContent = NOMBRE;
         
         function hacerMasGrandeElSi() {
             yesSize += 0.2;
@@ -598,25 +604,28 @@
             btnNo.style.top = randomY + 'px';
         }
         
+        // ============================================
+        // VERSIÓN LIGERA - SOLO 3 ELEMENTOS FLOTANTES
+        // ============================================
         function crearElementosFlotantes() {
-            const elementos = ['🌸', '🌹', '🌺', '🌷', '💮', '🏵️', '🌻', '🌼', '❤️', '💕', '💖', '💗', '💓', '💞'];
+            const elementos = ['❤️', '🌸', '🌹'];
             
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 3; i++) {
                 setTimeout(() => {
                     const element = document.createElement('div');
                     element.innerHTML = elementos[Math.floor(Math.random() * elementos.length)];
                     element.className = 'floating-element';
                     element.style.left = Math.random() * window.innerWidth + 'px';
                     element.style.top = window.innerHeight + 'px';
-                    element.style.fontSize = (25 + Math.random() * 45) + 'px';
-                    element.style.animation = `floatVertical ${5 + Math.random() * 5}s ease-in-out infinite`;
-                    element.style.opacity = 0.6 + Math.random() * 0.3;
+                    element.style.fontSize = (20 + Math.random() * 30) + 'px';
+                    element.style.animation = `floatVertical ${4 + Math.random() * 3}s ease-in-out infinite`;
+                    element.style.opacity = 0.4 + Math.random() * 0.3;
                     document.body.appendChild(element);
                     
                     setTimeout(() => {
                         element.remove();
-                    }, 8000);
-                }, i * 150);
+                    }, 5000);
+                }, i * 100);
             }
         }
         
@@ -628,7 +637,7 @@
                 const mensajeRandom = mensajesHuida[Math.floor(Math.random() * mensajesHuida.length)];
                 messageEl.textContent = mensajeRandom;
                 hacerMasGrandeElSi();
-                crearElementosFlotantes();
+                crearElementosFlotantes(); // Solo 3 elementos
             } else {
                 hacerMasPequenoElNo();
             }
@@ -651,25 +660,20 @@
             }
         });
         
-        // FUNCIÓN ACEPTADO
+        // FUNCIÓN ACEPTADO - REDUCIDA
         btnSi.addEventListener('click', function() {
-            // Ocultar todo el contenido anterior
             contentTop.classList.add('hidden');
             buttonsContainer.classList.add('hidden');
             messageContainer.classList.add('hidden');
             
-            // Mostrar pantalla de éxito
             successContainer.classList.remove('hidden');
             successContainer.innerHTML = `
                 <div class="success-screen">
                     <div class="success-title">¡YEEEEI! 💕</div>
                     <div class="success-message">¡Sabía que dirías que sí, ${NOMBRE}!</div>
-                    
-                    <!-- ESPACIO PARA EL GIF -->
                     <div class="gif-container">
                         <img src="${GIF_URL}" alt="San Valentín GIF" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=gif-placeholder><span>💝</span>¡Aquí va tu GIF!<br><small style=font-size:1rem>Cambia la URL en el código</small></div>'">
                     </div>
-                    
                     <div style="font-size: 2.5rem; margin-top: 20px; animation: pulse 1.5s infinite;">
                         💖 💘 💝
                     </div>
@@ -679,14 +683,9 @@
                 </div>
             `;
             
-            // Asegurar que la música siga sonando
-            if (audio.paused && musicaActivada) {
-                audio.play();
-            }
-            
-            // Crear muchos elementos flotantes
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => crearElementosFlotantes(), i * 20);
+            // REDUCIDO: 15 corazones flotantes (antes 100)
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => crearElementosFlotantes(), i * 30);
             }
         });
         
@@ -700,15 +699,12 @@
             btnNo.style.top = '50%';
             btnNo.style.transform = `translate(-50%, -50%) scale(${noSize})`;
             
-            // Elementos decorativos fijos
-            const decoraciones = ['🌸', '🌹', '🌺', '🌷', '💮', '🏵️'];
+            // Decoraciones fijas (solo 3, antes 6)
+            const decoraciones = ['🌸', '🌹', '❤️'];
             const posiciones = [
                 { left: '2%', top: '10%' },
                 { left: '96%', top: '20%' },
-                { left: '1%', top: '70%' },
-                { left: '95%', top: '80%' },
-                { left: '3%', top: '40%' },
-                { left: '97%', top: '55%' }
+                { left: '1%', top: '70%' }
             ];
             
             posiciones.forEach((pos, index) => {
@@ -717,25 +713,23 @@
                 decor.style.position = 'fixed';
                 decor.style.left = pos.left;
                 decor.style.top = pos.top;
-                decor.style.fontSize = '50px';
+                decor.style.fontSize = '45px';
                 decor.style.pointerEvents = 'none';
                 decor.style.zIndex = '10';
                 decor.style.animation = `flowerFloat ${6 + index}s ease-in-out infinite`;
                 decor.style.filter = 'drop-shadow(0 15px 20px rgba(255,80,120,0.2))';
-                decor.style.opacity = '0.9';
+                decor.style.opacity = '0.8';
                 document.body.appendChild(decor);
             });
             
+            // Unos pocos elementos al inicio
             setTimeout(() => {
                 crearElementosFlotantes();
             }, 500);
         });
         
-        setInterval(() => {
-            if (btnSi.style.display !== 'none' && !successContainer.classList.contains('hidden')) {
-                crearElementosFlotantes();
-            }
-        }, 4000);
+        // ELIMINADO: setInterval que causaba trabas
+        // Ya no hay elementos flotantes cada 4 segundos
     </script>
 </body>
 </html>
