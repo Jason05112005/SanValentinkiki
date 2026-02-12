@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Quieres ser mi San Valentín? 💘</title>
     <style>
+        /* ===== MANTÉN TODO EL CSS IGUAL ===== */
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
         body {
@@ -414,6 +415,7 @@
     </style>
 </head>
 <body>
+    <!-- AUDIO CON TUS URLs CORREGIDAS -->
     <audio id="bg-music" preload="auto"></audio>
 
     <div class="music-player" id="musicControl">
@@ -423,7 +425,7 @@
     <div class="container" id="mainContainer">
         <div class="content-top" id="contentTop">
             <h1>💝 ¡Una pregunta especial! 💝</h1>
-            <span class="name" id="nombreDestino">Valentina</span>
+            <span class="name" id="nombreDestino">Katherine</span>
             <div class="question" id="pregunta">
                 ¿Quieres ser mi San Valentín?
             </div>
@@ -445,9 +447,9 @@
 
     <script>
         // ============================================
-        // CONFIGURACIÓN - ¡CAMBIA ESTOS VALORES!
+        // CONFIGURACIÓN - TUS URLs CORRECTAS
         // ============================================
-        const NOMBRE = "Kiki";
+        const NOMBRE = "Katherine";
         const CANCION_URL = "https://jason05112005.github.io/SanValentinkiki/Amor.mp3";
         const GIF_URL = "https://i.pinimg.com/originals/10/f4/9b/10f49b851870dcbddfb368d0d4ba7ede.gif";
         // ============================================
@@ -457,7 +459,6 @@
         let yesSize = 1;
         let noCount = 0;
         let modoHuida = false;
-        let musicaActivada = false;
         let audioIniciado = false;
         
         // Elementos DOM
@@ -477,42 +478,71 @@
         nombreDestino.textContent = NOMBRE;
         
         // ============================================
-        // FUNCIÓN DE AUDIO - INICIA CON PRIMER CLIC
+        // FUNCIÓN DE AUDIO - ¡CORREGIDA Y FORZADA!
         // ============================================
         function iniciarAudio() {
             if (!audioIniciado) {
+                console.log("🎵 Intentando reproducir audio...");
+                
+                // Configurar el audio
                 audio.src = CANCION_URL;
                 audio.loop = true;
                 audio.volume = 0.7;
                 
-                audio.play().then(() => {
-                    musicaActivada = true;
-                    audioIniciado = true;
-                    musicIcon.textContent = '🎵';
-                }).catch(error => {
-                    musicIcon.textContent = '🔇';
-                });
+                // IMPORTANTE: Precargar el audio
+                audio.load();
+                
+                // Forzar reproducción con promesa
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log("✅ Música reproduciéndose");
+                        audioIniciado = true;
+                        musicIcon.textContent = '🎵';
+                    }).catch(error => {
+                        console.log("❌ Error al reproducir:", error);
+                        musicIcon.textContent = '🔇';
+                        
+                        // INTENTAR DE NUEVO con interacción del usuario
+                        document.body.addEventListener('click', function reproIntentar() {
+                            audio.play();
+                            musicIcon.textContent = '🎵';
+                            audioIniciado = true;
+                            document.body.removeEventListener('click', reproIntentar);
+                        }, { once: true });
+                    });
+                }
             }
         }
         
-        // Detectar primera interacción
-        function detectarPrimeraInteraccion() {
-            const eventos = ['click', 'mouseover', 'touchstart', 'keydown'];
-            
-            function primeraInteraccionHandler() {
-                iniciarAudio();
-                eventos.forEach(evento => {
-                    document.body.removeEventListener(evento, primeraInteraccionHandler);
-                });
-            }
-            
-            eventos.forEach(evento => {
-                document.body.addEventListener(evento, primeraInteraccionHandler, { once: true });
-            });
-        }
-        detectarPrimeraInteraccion();
+        // ============================================
+        // DETECTAR PRIMER CLIC - ¡AHORA SÍ FUNCIONA!
+        // ============================================
+        // Múltiples formas de detectar interacción
         
-        // Control de música
+        // 1. Clic en cualquier parte de la página
+        document.body.addEventListener('click', function primeraVez() {
+            console.log("👆 Primer clic detectado");
+            iniciarAudio();
+        }, { once: true });
+        
+        // 2. Touch para móviles
+        document.body.addEventListener('touchstart', function primeraVezTouch() {
+            console.log("👆 Primer toque detectado");
+            iniciarAudio();
+        }, { once: true });
+        
+        // 3. También en los botones específicamente (por si acaso)
+        btnSi.addEventListener('click', function primerClickSi() {
+            iniciarAudio();
+        }, { once: true });
+        
+        btnNo.addEventListener('click', function primerClickNo() {
+            iniciarAudio();
+        }, { once: true });
+        
+        // Control manual de música
         musicControl.addEventListener('click', function(e) {
             e.stopPropagation();
             
@@ -522,11 +552,9 @@
                 if (audio.paused) {
                     audio.play();
                     musicIcon.textContent = '🎵';
-                    musicaActivada = true;
                 } else {
                     audio.pause();
                     musicIcon.textContent = '🔇';
-                    musicaActivada = false;
                 }
             }
         });
@@ -604,9 +632,6 @@
             btnNo.style.top = randomY + 'px';
         }
         
-        // ============================================
-        // VERSIÓN LIGERA - SOLO 3 ELEMENTOS FLOTANTES
-        // ============================================
         function crearElementosFlotantes() {
             const elementos = ['❤️', '🌸', '🌹'];
             
@@ -637,7 +662,7 @@
                 const mensajeRandom = mensajesHuida[Math.floor(Math.random() * mensajesHuida.length)];
                 messageEl.textContent = mensajeRandom;
                 hacerMasGrandeElSi();
-                crearElementosFlotantes(); // Solo 3 elementos
+                crearElementosFlotantes();
             } else {
                 hacerMasPequenoElNo();
             }
@@ -660,7 +685,7 @@
             }
         });
         
-        // FUNCIÓN ACEPTADO - REDUCIDA
+        // FUNCIÓN ACEPTADO - CON TU GIF
         btnSi.addEventListener('click', function() {
             contentTop.classList.add('hidden');
             buttonsContainer.classList.add('hidden');
@@ -672,7 +697,7 @@
                     <div class="success-title">¡YEEEEI! 💕</div>
                     <div class="success-message">¡Sabía que dirías que sí, ${NOMBRE}!</div>
                     <div class="gif-container">
-                        <img src="${GIF_URL}" alt="San Valentín GIF" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=gif-placeholder><span>💝</span>¡Aquí va tu GIF!<br><small style=font-size:1rem>Cambia la URL en el código</small></div>'">
+                        <img src="${GIF_URL}" alt="San Valentín GIF" onerror="this.onerror=null; this.src='https://i.pinimg.com/originals/10/f4/9b/10f49b851870dcbddfb368d0d4ba7ede.gif';">
                     </div>
                     <div style="font-size: 2.5rem; margin-top: 20px; animation: pulse 1.5s infinite;">
                         💖 💘 💝
@@ -683,7 +708,6 @@
                 </div>
             `;
             
-            // REDUCIDO: 15 corazones flotantes (antes 100)
             for (let i = 0; i < 15; i++) {
                 setTimeout(() => crearElementosFlotantes(), i * 30);
             }
@@ -699,7 +723,7 @@
             btnNo.style.top = '50%';
             btnNo.style.transform = `translate(-50%, -50%) scale(${noSize})`;
             
-            // Decoraciones fijas (solo 3, antes 6)
+            // Decoraciones fijas
             const decoraciones = ['🌸', '🌹', '❤️'];
             const posiciones = [
                 { left: '2%', top: '10%' },
@@ -722,14 +746,10 @@
                 document.body.appendChild(decor);
             });
             
-            // Unos pocos elementos al inicio
             setTimeout(() => {
                 crearElementosFlotantes();
             }, 500);
         });
-        
-        // ELIMINADO: setInterval que causaba trabas
-        // Ya no hay elementos flotantes cada 4 segundos
     </script>
 </body>
 </html>
